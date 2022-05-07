@@ -9,12 +9,19 @@ local defaults = {
   list_buffers = false,
   initial_content = {},
   ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },
-  format_opts = { [''] = '[None]' }
+  format_opts = { [''] = '[None]' },
+  run = {
+    py = 'w !python',
+    js = 'w !node',
+    lua = 'w | luafile %'
+  }
 }
 
 function M.setup(opts)
   M.opts = vim.tbl_deep_extend("force", {}, defaults, opts or {})
-  -- TODO assert dir ends with path_separator
+  if not string.find(M.opts.dir, path_separator .. '$') then
+    M.opts.dir = M.opts.dir .. path_separator
+  end
 end
 
 return M

@@ -18,9 +18,15 @@ local function standardize_opts(opts, cb)
   cb()
 end
 
-local function on_created(bufnr, opts)
+function M.on_attempt_enter(bufnr, data)
   vim.api.nvim_buf_set_option(bufnr, 'buflisted', config.opts.list_buffers)
-  vim.api.nvim_buf_set_var(bufnr, 'is_attempt', true)
+  vim.api.nvim_buf_set_var(bufnr, 'attempt_data', data)
+end
+
+function M.open_attempt(data)
+  vim.cmd('edit ' .. data.path)
+  local bufnr = vim.api.nvim_buf_get_number(0)
+  M.on_attempt_enter(bufnr, data)
 end
 
 function M.new(opts, cb)
@@ -35,9 +41,7 @@ function M.new(opts, cb)
       initial_content = opts.initial_content
     }, function(file)
       vim.schedule(function()
-        vim.cmd('edit ' .. full_path)
-        local bufnr = vim.api.nvim_buf_get_number(0)
-        on_created(bufnr)
+        M.open_attempt(file)
         if cb then cb(file) end
       end)
     end)

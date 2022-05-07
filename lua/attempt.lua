@@ -30,5 +30,7 @@ M.new_select = req('attempt.interface', 'new_select')
 
 M.new_input_ext = req('attempt.interface', 'new_input_ext')
 
+M.run = req('attempt.interface', 'run')
+
 return M
 
