@@ -21,6 +21,14 @@ end
 function M.on_attempt_enter(bufnr, data)
   vim.api.nvim_buf_set_option(bufnr, 'buflisted', config.opts.list_buffers)
   vim.api.nvim_buf_set_var(bufnr, 'attempt_data', data)
+  if config.opts.autosave then
+    local augroup = vim.api.nvim_create_augroup('attempt.nvim-' .. tostring(bufnr), { clear = true })
+    vim.api.nvim_create_autocmd('BufLeave', {
+      buffer = bufnr,
+      command = 'w',
+      group = augroup
+    })
+  end
 end
 
 function M.open_attempt(data)

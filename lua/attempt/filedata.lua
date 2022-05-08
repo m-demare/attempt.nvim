@@ -50,6 +50,7 @@ M.new_file = a.void(function (opts, cb)
     local err, fd = a.uv.fs_open(opts.path, 'w', filemode)
     assert(not err, err)
     local content = opts.initial_content or config.opts.initial_content[opts.ext] or ''
+    if type(content) == 'function' then content = content(opts.ext) end
     local err = a.uv.fs_write(fd, content, 0)
     assert(not err, err)
 

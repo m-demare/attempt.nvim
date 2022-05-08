@@ -3,11 +3,17 @@ local M = {}
 local unix = vim.fn.has 'unix' == 1
 local path_separator = unix and '/' or '\\'
 
+local function initial_content_fn(ext)
+  return require('attempt.initial_content.' .. ext)
+end
+
 local defaults = {
   dir = (unix and '/tmp/' or vim.fn.expand '$TEMP\\') .. 'attempt.nvim' .. path_separator,
   autosave = false,
   list_buffers = false,
-  initial_content = {},
+  initial_content = {
+    py = initial_content_fn
+  },
   ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },
   format_opts = { [''] = '[None]' },
   run = {
