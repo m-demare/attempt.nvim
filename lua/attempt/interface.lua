@@ -34,6 +34,7 @@ function M.run(bufnr)
     vim.notify('No config for running ' .. file_entry.ext .. 'files', vim.log.levels.WARN, {})
     return
   end
+  print('\n')
   if type(config.opts.run[file_entry.ext]) == 'string' then
     vim.cmd(config.opts.run[file_entry.ext])
   else
