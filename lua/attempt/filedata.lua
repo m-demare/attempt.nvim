@@ -32,8 +32,8 @@ M.save = a.void(function (data, cb)
 end)
 
 M.new_file = a.void(function (opts, cb)
-  M.get(function(data)
-    local old_entry = util.find(data, function (f)
+  M.get(function(file_entries)
+    local old_entry = util.find(file_entries, function (f)
       return f.path == opts.path
     end)
     if old_entry then cb(old_entry); return end
@@ -44,7 +44,7 @@ M.new_file = a.void(function (opts, cb)
       ext = opts.ext,
       creation_date = os.time()
     }
-    table.insert(data, new_entry)
+    table.insert(file_entries, new_entry)
 
     -- Save new file
     local err, fd = a.uv.fs_open(opts.path, 'w', filemode)
@@ -54,31 +54,31 @@ M.new_file = a.void(function (opts, cb)
     local err = a.uv.fs_write(fd, content, 0)
     assert(not err, err)
 
-    M.save(data, function()
+    M.save(file_entries, function()
       cb(new_entry)
     end)
   end)
 end)
 
 function M.next_filename(cb)
-  M.get(function (data)
-    cb('scratch-' .. tostring(#data))
+  M.get(function (file_entries)
+    cb('scratch-' .. tostring(#file_entries))
   end)
 end
 
 M.delete = a.void(function (path, cb)
-  M.get(function (data)
-    local _, i = util.find(data, function (f)
+  M.get(function (file_entries)
+    local _, i = util.find(file_entries, function (f)
       return f.path == path
     end)
     if not i then cb(false); return end
-    table.remove(data, i)
+    table.remove(file_entries, i)
 
     -- Delete file
     local err = a.uv.fs_unlink(path)
     assert(not err, err)
 
-    M.save(data, function ()
+    M.save(file_entries, function ()
       if cb then cb(true) end
     end)
   end)

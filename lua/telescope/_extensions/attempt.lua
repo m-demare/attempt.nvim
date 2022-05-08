@@ -12,18 +12,18 @@ local function entry_to_filename(e)
 end
 
 local scratch_picker = function(opts)
-  filedata.get(function (data)
+  filedata.get(function (file_entries)
     vim.schedule(function ()
       opts = opts or {}
       pickers.new(opts, {
         prompt_title = "Scratch files",
         finder = finders.new_table {
-          results = data,
+          results = file_entries,
           entry_maker = function(entry)
             return {
               value = entry,
               display = entry_to_filename,
-              ordinal = entry.filename .. '.' .. entry.ext,
+              ordinal = entry_to_filename({ value = entry }),
               path = entry.path
             }
           end
