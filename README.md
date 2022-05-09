@@ -3,6 +3,7 @@
 Manage your temporary buffers
 
 ## Preview
+![preview](https://user-images.githubusercontent.com/34817965/167322611-cd4d7b8c-e041-4c57-a2ba-9c214c250411.gif)
 
 ## Features
 - Quickly create scratch files for any filetype, using vim.ui.select, vim.ui.input or
@@ -35,7 +36,7 @@ use {
 Plug 'nvim-lua/plenary.nvim'
 Plug 'm-demare/attempt.nvim'
 
--- Optional
+" Optional
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-ui-select.nvim'
 ```
@@ -95,8 +96,8 @@ map('n', '<leader>al', 'Telescope attempt')       -- search through attempts
 -- or: map('n', '<leader>al', attempt.open_select) -- use ui.select instead of telescope
 ```
 
-See `[:h
-attempt.nvim](https://github.com/m-demare/attempt.nvim/tree/main/doc/attempt.txt)`
+See [`:h
+attempt.nvim`](https://github.com/m-demare/attempt.nvim/tree/main/doc/attempt.txt)
 for more customized setups
 
 
