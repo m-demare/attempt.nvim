@@ -1,0 +1,157 @@
+*attempt.txt* Manage temporary buffers
+*attempt.nvim*
+
+Author: Matías Demare <https://github.com/m-demare>
+Homepage: <https://github.com/m-demare/attempt.nvim>
+License: MIT License
+
+==============================================================================
+USAGE                                                          *attempt-usage*
+
+Calling `setup` is required for the plugin to work. Calling it with no
+arguments will use the default settings. You can pass a table with the
+settings you want to override. The defaults are the following:
+
+>
+local function initial_content_fn(ext)
+  return require('attempt.initial_content.' .. ext)
+end
+
+require('attempt').setup {
+  dir = (unix and '/tmp/' or vim.fn.expand '$TEMP\\') .. 'attempt.nvim' .. path_separator,
+  autosave = false,
+  list_buffers = false,     -- This will make them show on other pickers (like :Telescope buffers)
+  initial_content = {
+    py = initial_content_fn -- Either string or function that returns the initial content
+  },
+  ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },  -- Options to choose from
+  format_opts = { [''] = '[None]' },                    -- How they'll look
+  run = {
+    py = 'w !python',                                   -- Either strings or lua functions
+    js = 'w !node',
+    lua = 'w | luafile %'
+  }
+}
+<
+
+==============================================================================
+CONFIGURATION                                                 *attempt-config*
+
+This section describes the configuration fields which can be passed to
+|attempt.setup()|. The settings table is merged with the defaults using
+vim.tbl_deep_extend (giving priority to user's settings), so you only have to
+change the settings you want to differ.
+
+dir                                                       *attempt-config-dir*
+    Description: Directory in which attempt files will be saved. If you want
+    files to be persistent, you can change it to something like
+    ~/.local/share/attempt.nvim
+    Type: `string`
+    Default: (unix and '/tmp/' or vim.fn.expand '$TEMP\\') .. 'attempt.nvim' .. path_separator,
+
+autosave                                             *attempt-config-autosave*
+    Description: Whether or not to autosave attempt files on BufLeave
+    Type: `bool`
+    Default: false
+
+list_buffers                                     *attempt-config-list_buffers*
+    Description: Value of |buflisted| that will be set for attempt buffers
+    Type: `bool`
+    Default: false
+
+initial_content                               *attempt-config-initial_content*
+    Description: Content that will be set for each filetype on create. For
+    each extension, you can pass a string or a function that receives the
+    extension and returns a string with the content (this is recommended, to
+    avoid loading strings unnecessarily)
+    Type: `table`
+    Default: see |attempt-usage|
+
+ext_options                                       *attempt-config-ext_options*
+    Description: Options that will be displayed in |attempt-new_select|
+    Type: `string[]`
+    Default: see |attempt-usage|
+
+format_opts                                       *attempt-config-format_opts*
+    Description: How |ext_options| fill be formatted
+    Type: `table`
+    Default: see |attempt-usage|
+
+run                                                       *attempt-config-run*
+    Description: Configurations to run each file type. Each entry can be
+    either a string (to be executed with |vim.cmd|) or a lua function that
+    receives the file extension and bufnr
+    Type: `table`
+    Default: see |attempt-usage|
+
+==============================================================================
+INTERFACE                                                  *attempt-interface*
+
+These are all the functions exported in |require 'attempt'|. Functions with
+the {async} attribute are run asynchronously and are non-blocking (return
+immediately)
+
+setup({opts})                                                *attempt.setup()*
+    Description: Initializes necessary configurations (see |attempt-usage|)
+
+    Parameters: ~
+        {opts} (table|nil):
+            A table with some or all of the settings listed
+            in |attempt-config|
+
+new_select({cb})                                        *attempt.new_select()*
+    Description: Creates a new attempt, using |vim.ui.select()| to choose
+    from |attempt-config-ext_options|
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {cb} (function):
+            Function to be called after creation, with the
+            |attempt-file_entry| as parameter
+
+new_input_ext({cb})                                  *attempt.new_input_ext()*
+    Description: Creates a new attempt, using |vim.ui.input()| to choose
+    the extension
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {cb} (function):
+            Function to be called after creation, with the
+            |attempt-file_entry| as parameter
+
+new({opts}, {cb})                                              *attempt.new()*
+    Description: Creates new attempt, using the options passed
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {opts} (table):
+            Options
+            - {ext}:                (string|nil)
+              Extension for the new file
+            - {filename}:           (string|nil)
+              Filename for the new file (if included, you'll
+              have to ensure it's unique, or the existing one
+              will be open)
+            - {initial_content}:    (string|function|nil)
+              Same as |attempt-config-initial_content|
+        {cb} (function):
+            Function to be called after creation, with the
+            |attempt-file_entry| as parameter
+
+run({bufnr})                                                   *attempt.run()*
+    Description: Run attempt with the configuration in |attempt-config-run|
+
+    Parameters: ~
+        {bufnr}:        (number|nil)
+        If provided, it will be passed to the corresponding
+        lua function from |attempt-config-run|, and you'll
+        have to manage how it's run. Use nil to run the
+        current buffer
+
+vim:tw=78:et:ft=help:norl:

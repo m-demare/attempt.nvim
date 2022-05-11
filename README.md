@@ -97,7 +97,7 @@ map('n', '<leader>al', 'Telescope attempt')       -- search through attempts
 ```
 
 See [`:h
-attempt.nvim`](https://github.com/m-demare/attempt.nvim/tree/main/doc/attempt.txt)
+attempt-interface`](https://github.com/m-demare/attempt.nvim/tree/main/doc/attempt.txt)
 for more customized setups
 
 
