@@ -34,5 +34,9 @@ M.run = req('attempt.interface', 'run')
 
 M.open_select = req('attempt.interface', 'open_select')
 
+M.delete = req('attempt.interface', 'delete')
+
+M.delete_buf = req('attempt.interface', 'delete_buf')
+
 return M
 

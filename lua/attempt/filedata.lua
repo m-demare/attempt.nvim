@@ -9,7 +9,10 @@ local filemode = 438 -- = 0o666
 M.get = a.void(function (cb)
   local err, fd = a.uv.fs_open(data_file_path, 'r', filemode)
   if err then
-    return cb {}
+    return cb {
+      internal = { version = 1, num_files = 0 },
+      file_entries = {}
+    }
   end
   local err, stat = a.uv.fs_fstat(fd)
   assert(not err, err)
@@ -32,8 +35,8 @@ M.save = a.void(function (data, cb)
 end)
 
 M.new_file = a.void(function (opts, cb)
-  M.get(function(file_entries)
-    local old_entry = util.find(file_entries, function (f)
+  M.get(function(data)
+    local old_entry = util.find(data.file_entries, function (f)
       return f.path == opts.path
     end)
     if old_entry then cb(old_entry); return end
@@ -44,7 +47,7 @@ M.new_file = a.void(function (opts, cb)
       ext = opts.ext,
       creation_date = os.time()
     }
-    table.insert(file_entries, new_entry)
+    table.insert(data.file_entries, new_entry)
 
     -- Save new file
     local err, fd = a.uv.fs_open(opts.path, 'w', filemode)
@@ -54,31 +57,32 @@ M.new_file = a.void(function (opts, cb)
     local err = a.uv.fs_write(fd, content, 0)
     assert(not err, err)
 
-    M.save(file_entries, function()
+    data.internal.num_files = data.internal.num_files + 1
+    M.save(data, function()
       cb(new_entry)
     end)
   end)
 end)
 
 function M.next_filename(cb)
-  M.get(function (file_entries)
-    cb('scratch-' .. tostring(#file_entries))
+  M.get(function (data)
+    cb('scratch-' .. tostring(data.internal.num_files))
   end)
 end
 
 M.delete = a.void(function (path, cb)
-  M.get(function (file_entries)
-    local _, i = util.find(file_entries, function (f)
+  M.get(function (data)
+    local _, i = util.find(data.file_entries, function (f)
       return f.path == path
     end)
     if not i then cb(false); return end
-    table.remove(file_entries, i)
+    table.remove(data.file_entries, i)
 
     -- Delete file
     local err = a.uv.fs_unlink(path)
     assert(not err, err)
 
-    M.save(file_entries, function ()
+    M.save(data, function ()
       if cb then cb(true) end
     end)
   end)

@@ -57,4 +57,21 @@ function M.open_select(cb)
   end)
 end
 
+function M.delete(path, cb)
+  manager.delete(path, cb)
+end
+
+function M.delete_buf(force, bufnr, cb)
+  bufnr = bufnr or vim.api.nvim_buf_get_number(0)
+  local ok, file_entry = pcall(vim.api.nvim_buf_get_var, bufnr, 'attempt_data')
+  if not ok then
+    vim.notify('Not an attempt buffer', vim.log.levels.WARN, {})
+    return
+  end
+  vim.api.nvim_buf_delete(bufnr, {
+    force = force
+  })
+  M.delete(file_entry.path, cb)
+end
+
 return M

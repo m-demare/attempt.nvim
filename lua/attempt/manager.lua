@@ -57,7 +57,9 @@ function M.new(opts, cb)
 end
 
 function M.list(cb)
-  filedata.get(cb)
+  filedata.get(function (data)
+    cb(data.file_entries)
+  end)
 end
 
 function M.delete(path, cb)
