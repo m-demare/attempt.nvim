@@ -93,7 +93,8 @@ map('n', '<leader>an', attempt.new_select)        -- new attempt, selecting exte
 map('n', '<leader>ai', attempt.new_input_ext)     -- new attempt, inputing extension
 map('n', '<leader>ar', attempt.run)               -- run attempt
 map('n', '<leader>al', 'Telescope attempt')       -- search through attempts
--- or: map('n', '<leader>al', attempt.open_select) -- use ui.select instead of telescope
+map('n', '<leader>ad', attempt.delete_buf)        -- delete attempt from current buffer
+--or: map('n', '<leader>al', attempt.open_select) -- use ui.select instead of telescope
 ```
 
 See [`:h

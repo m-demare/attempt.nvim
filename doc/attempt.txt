@@ -154,4 +154,47 @@ run({bufnr})                                                   *attempt.run()*
         have to manage how it's run. Use nil to run the
         current buffer
 
+open_select({cb})                                      *attempt.open_select()*
+    Description: Opens existing attempt, letting you choose with
+    |vim.ui.select|
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {cb} (function):
+            Function to be called after opening, with the
+            |attempt-file_entry| as parameter
+
+delete({path}, {cb})                                        *attempt.delete()*
+    Description: Deletes existing attempt, given by path
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {path} (string):
+            Path of the attempt to delete
+        {cb} (function):
+            Function to be called after deletion, with its
+            parameter indicating if it was successful
+
+delete_buf({force}, {bufnr}, {cb})                      *attempt.delete_buf()*
+    Description: Deletes the attempt in the buffer bufnr (or the current if
+    bufnr is nil). Fails if bufnr is not an attempt buffer
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {force} (boolean):
+            If true, it deletes the attempt even if the buffer
+            was dirty. Default: false
+        {bufnr} (number):
+            Buffer number to delete. Default: current
+        {cb} (function):
+            Function to be called after deletion, with its
+            parameter indicating if it was successful
+
+
 vim:tw=78:et:ft=help:norl:
