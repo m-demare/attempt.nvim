@@ -10,7 +10,9 @@ Manage your temporary buffers
   any other method
 - Scratch files are saved in a temporary directory for later use, and can be accessed
   across neovim instances
-- Reopen closed scratch file with Telescope
+- Files are initialized with all the necessary boilerplate to be runnable
+- Reopen closed attempts with Telescope
+- Autosave attempts
 - Run the scratch files
 - Every file operation is asynchronous
 
@@ -56,6 +58,11 @@ require('attempt').setup{
   list_buffers = false,     -- This will make them show on other pickers (like :Telescope buffers)
   initial_content = {
     py = initial_content_fn -- Either string or function that returns the initial content
+    c = initial_content_fn,
+    cpp = initial_content_fn,
+    java = initial_content_fn,
+    rs = initial_content_fn,
+    go = initial_content_fn
   },
   ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },  -- Options to choose from
   format_opts = { [''] = '[None]' },                    -- How they'll look

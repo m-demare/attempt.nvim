@@ -12,7 +12,12 @@ local defaults = {
   autosave = false,
   list_buffers = false,
   initial_content = {
-    py = initial_content_fn
+    py = initial_content_fn,
+    c = initial_content_fn,
+    cpp = initial_content_fn,
+    java = initial_content_fn,
+    rs = initial_content_fn,
+    go = initial_content_fn
   },
   ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },
   format_opts = { [''] = '[None]' },

@@ -23,6 +23,11 @@ require('attempt').setup {
   list_buffers = false,     -- This will make them show on other pickers (like :Telescope buffers)
   initial_content = {
     py = initial_content_fn -- Either string or function that returns the initial content
+    c = initial_content_fn,
+    cpp = initial_content_fn,
+    java = initial_content_fn,
+    rs = initial_content_fn,
+    go = initial_content_fn
   },
   ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },  -- Options to choose from
   format_opts = { [''] = '[None]' },                    -- How they'll look

@@ -1,0 +1,6 @@
+return [[
+fn main() {
+
+}
+]]
+
