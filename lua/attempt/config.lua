@@ -17,14 +17,17 @@ local defaults = {
     cpp = initial_content_fn,
     java = initial_content_fn,
     rs = initial_content_fn,
-    go = initial_content_fn
+    go = initial_content_fn,
+    sh = initial_content_fn
   },
   ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },
   format_opts = { [''] = '[None]' },
   run = {
     py = 'w !python',
     js = 'w !node',
-    lua = 'w | luafile %'
+    lua = 'w | luafile %',
+    sh = 'w !bash',
+    pl = 'w !perl'
   }
 }
 
