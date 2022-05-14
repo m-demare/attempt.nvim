@@ -3,11 +3,6 @@ local config = require 'attempt.config'
 local filedata = require 'attempt.filedata'
 
 local function standardize_opts(opts, cb)
-  if opts.ext and opts.ext ~= '' then
-    opts.ext = '.' .. opts.ext
-  else
-    opts.ext = ''
-  end
   if not opts.filename then
     filedata.next_filename(function(name)
       opts.filename = name
@@ -38,14 +33,10 @@ function M.open_attempt(file_entry)
 end
 
 function M.new(opts, cb)
-  local ext = opts.ext or ''
   standardize_opts(opts, function()
-    local full_path = config.opts.dir .. opts.filename .. opts.ext
-    print(full_path, ext)
     filedata.new_file({
       filename = opts.filename,
-      path = full_path,
-      ext = ext,
+      ext = opts.ext,
       initial_content = opts.initial_content
     }, function(file_entry)
       vim.schedule(function()
@@ -64,6 +55,32 @@ end
 
 function M.delete(path, cb)
   filedata.delete(path, cb)
+end
+
+function M.rename(path, new_name, cb)
+  filedata.rename(path, new_name, function (new_entry)
+    vim.schedule(function ()
+      if not new_entry then return cb(nil) end
+
+      local bufs = vim.api.nvim_list_bufs()
+      for _, bufnr in ipairs(bufs) do
+        if vim.api.nvim_buf_is_loaded(bufnr) then
+          local buf_name = vim.api.nvim_buf_get_name(bufnr)
+          if buf_name == path then
+            vim.api.nvim_buf_set_name(bufnr, new_entry.path)
+            vim.api.nvim_buf_set_var(bufnr, 'attempt_data', new_entry)
+            -- to avoid the 'overwrite existing file' error message on write
+            if vim.api.nvim_buf_get_option(bufnr, "buftype") == "" then
+              vim.api.nvim_buf_call(bufnr, function()
+                vim.cmd 'silent! write!'
+              end)
+            end
+          end
+        end
+      end
+      if cb then cb(new_entry) end
+    end)
+  end)
 end
 
 return M

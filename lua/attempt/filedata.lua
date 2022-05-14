@@ -34,15 +34,25 @@ M.save = a.void(function (data, cb)
     if cb then cb() end
 end)
 
+local function get_path(filename, ext)
+  if ext and ext ~= '' then
+    ext = '.' .. ext
+  else
+    ext = ''
+  end
+  return config.opts.dir .. filename .. ext
+end
+
 M.new_file = a.void(function (opts, cb)
   M.get(function(data)
+    local path = get_path(opts.filename, opts.ext)
     local old_entry = util.find(data.file_entries, function (f)
-      return f.path == opts.path
+      return f.path == path
     end)
     if old_entry then cb(old_entry); return end
 
     local new_entry = {
-      path = opts.path,
+      path = path,
       filename = opts.filename,
       ext = opts.ext,
       creation_date = os.time()
@@ -50,7 +60,7 @@ M.new_file = a.void(function (opts, cb)
     table.insert(data.file_entries, new_entry)
 
     -- Save new file
-    local err, fd = a.uv.fs_open(opts.path, 'w', filemode)
+    local err, fd = a.uv.fs_open(path, 'w', filemode)
     assert(not err, err)
     local content = opts.initial_content or config.opts.initial_content[opts.ext] or ''
     if type(content) == 'function' then content = content(opts.ext) end
@@ -84,6 +94,26 @@ M.delete = a.void(function (path, cb)
 
     M.save(data, function ()
       if cb then cb(true) end
+    end)
+  end)
+end)
+
+M.rename = a.void(function (path, new_name, cb)
+  M.get(function (data)
+    local entry, _ = util.find(data.file_entries, function (f)
+      return f.path == path
+    end)
+    if not entry then cb(nil); return end
+
+    local new_path = get_path(new_name, entry.ext)
+    local err = a.uv.fs_rename(entry.path, new_path)
+    assert(not err, err)
+
+    entry.filename = new_name
+    entry.path = new_path
+
+    M.save(data, function ()
+      if cb then cb(entry) end
     end)
   end)
 end)

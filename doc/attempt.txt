@@ -196,5 +196,35 @@ delete_buf({force}, {bufnr}, {cb})                      *attempt.delete_buf()*
             Function to be called after deletion, with its
             parameter indicating if it was successful
 
+rename({path}, {new_name}, {cb})                            *attempt.rename()*
+    Description: Renames existing attempt, given by path
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {path} (string):
+            Path of the attempt to rename
+        {new_name} (string):
+            New name for the attempt
+        {cb} (function):
+            Function to be called after renaming, with the new
+            file entry as parameter (or nil if the path did not
+            correspond to an attempt
+
+rename_buf({bufnr}, {cb})                               *attempt.rename_buf()*
+    Description: renames the attempt in the buffer bufnr (or the current if
+    bufnr is nil). Fails if bufnr is not an attempt buffer
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {bufnr} (number):
+            Buffer number to delete. Default: current
+        {cb} (function):
+            Function to be called after renaming, with the new
+            file entry as parameter
+
 
 vim:tw=78:et:ft=help:norl:
