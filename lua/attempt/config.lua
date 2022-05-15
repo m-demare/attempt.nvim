@@ -26,13 +26,13 @@ local defaults = {
 	ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },
 	format_opts = { [''] = '[None]' },
 	run = {
-		py = 'w !python',
-		js = 'w !node',
-		lua = 'w | luafile %',
-		sh = 'w !bash',
-		pl = 'w !perl',
-		cpp =  'w| !' .. cpp_compiler .. ' % -o %:p:r.out && %:p:r.out' ,
-		c =  'w| !' .. c_compiler .. ' % -o %:p:r.out && %:p:r.out' ,
+		py = { 'w !python' },
+		js = { 'w !node' },
+		lua = { 'w' , 'luafile %' },
+		sh = { 'w !bash' },
+		pl = { 'w !perl' },
+		cpp = { 'w' , '!' .. cpp_compiler .. ' % -o %:p:r.out && %:p:r.out' },
+		c = { 'w' , '!' .. c_compiler .. ' % -o %:p:r.out && %:p:r.out' },
 	}
 }
 
