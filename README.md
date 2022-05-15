@@ -68,11 +68,11 @@ require('attempt').setup{
   ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },  -- Options to choose from
   format_opts = { [''] = '[None]' },                    -- How they'll look
   run = {
-    py = 'w !python',       -- Either strings or lua functions
-    js = 'w !node',
-    lua = 'w | luafile %',
-    sh = 'w !bash',
-    pl = 'w !perl'
+	py = { 'w !python' },      -- Either strings or lua functions
+	js = { 'w !node' },
+	lua = { 'w' , 'luafile %' },
+	sh = { 'w !bash' },
+	pl = { 'w !perl' },
   }
 }
 -- (You may omit the settings whose defaults you're ok with)
