@@ -33,11 +33,11 @@ require('attempt').setup {
   ext_options = { 'lua', 'js', 'py', 'cpp', 'c', '' },  -- Options to choose from
   format_opts = { [''] = '[None]' },                    -- How they'll look
   run = {
-    py = 'w !python',                                   -- Either strings or lua functions
-    js = 'w !node',
-    lua = 'w | luafile %',
-    sh = 'w !bash',
-    pl = 'w !perl'
+        py = { 'w !python' },
+        js = { 'w !node' },
+        lua = { 'w' , 'luafile %' },
+        sh = { 'w !bash' },
+        pl = { 'w !perl' },
   }
 }
 <
@@ -87,7 +87,7 @@ format_opts                                       *attempt-config-format_opts*
 
 run                                                       *attempt-config-run*
     Description: Configurations to run each file type. Each entry can be
-    either a string (to be executed with |vim.cmd|) or a lua function that
+    either a table of Strings (to be executed with |vim.cmd|) or a lua function that
     receives the file extension and bufnr
     Type: `table`
     Default: see |attempt-usage|
