@@ -5,7 +5,7 @@ local action_state = require 'telescope.actions.state'
 local action_set = require 'telescope.actions.set'
 
 local function entry_to_filename(e)
-  return e.value.filename .. (e.value.ext ~= '' and ('.' .. e.value.ext) or '')
+  return e.value.filename .. (e.value.ext and e.value.ext ~= '' and ('.' .. e.value.ext) or '')
 end
 
 local scratch_picker = function(opts)
@@ -46,7 +46,6 @@ end
 
 return require('telescope').register_extension {
   exports = {
-    attempts = scratch_picker
+    attempt = scratch_picker
   }
 }
-
