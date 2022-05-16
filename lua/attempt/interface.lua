@@ -35,10 +35,16 @@ function M.run(bufnr)
     return
   end
   print('\n') -- Prevent output from overlapping with existing msgs
-  if type(config.opts.run[file_entry.ext]) == 'string' then
-    vim.cmd(config.opts.run[file_entry.ext])
+  local run_cmds = config.opts.run[file_entry.ext]
+  if type(run_cmds) == 'table' then
+  for _, cmd in pairs(run_cmds) do
+    vim.cmd(cmd)
+  end
+  else if type(run_cmds) == 'string' then
+  vim.cmd(run_cmds)
   else
     config.opts.run[file_entry.ext](file_entry.ext, bufnr)
+    end
   end
 end
 
