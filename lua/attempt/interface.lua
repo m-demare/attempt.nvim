@@ -37,11 +37,11 @@ function M.run(bufnr)
   print('\n') -- Prevent output from overlapping with existing msgs
   local run_cmds = config.opts.run[file_entry.ext]
   if type(run_cmds) == 'table' then
-	for _, cmd in pairs(run_cmds) do
-		vim.cmd(cmd)
-	end
+  for _, cmd in pairs(run_cmds) do
+    vim.cmd(cmd)
+  end
   else if type(run_cmds) == 'string' then
-	vim.cmd(run_cmds)
+  vim.cmd(run_cmds)
   else
     config.opts.run[file_entry.ext](file_entry.ext, bufnr)
     end
