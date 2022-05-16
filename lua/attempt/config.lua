@@ -31,8 +31,8 @@ local defaults = {
 		lua = { 'w', 'luafile %' },
 		sh = { 'w !bash' },
 		pl = { 'w !perl' },
-		cpp = { "w" , '!'.. cpp_compiler ..'% -o %:p:r.out && echo "" && %:p:r.out'},
-		c = { "w" , '!'.. c_compiler ..'% -o %:p:r.out && echo "" && %:p:r.out'},
+		cpp = { "w" , '!'.. cpp_compiler ..' % -o %:p:r.out && echo "" && %:p:r.out'},
+		c = { "w" , '!'.. c_compiler ..' % -o %:p:r.out && echo "" && %:p:r.out'},
 	}
 }
 
