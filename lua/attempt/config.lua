@@ -3,9 +3,6 @@ local M = {}
 local unix = vim.fn.has 'unix' == 1
 local path_separator = unix and '/' or '\\'
 
--- local cpp_compiler = "g++"
--- local c_compiler = "gcc"
-
 local function initial_content_fn(ext)
 	return require('attempt.initial_content.' .. ext)
 end
@@ -28,11 +25,9 @@ local defaults = {
 	run = {
 		py = { 'w !python' },
 		js = { 'w !node' },
-		lua = { 'w' , 'luafile %' },
+		lua = { 'w', 'luafile %' },
 		sh = { 'w !bash' },
 		pl = { 'w !perl' },
-		-- cpp = { 'w' , '!' .. cpp_compiler .. ' % -o %:p:r.out && %:p:r.out' },
-		-- c = { 'w' , '!' .. c_compiler .. ' % -o %:p:r.out && %:p:r.out' },
 	}
 }
 
