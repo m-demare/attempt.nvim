@@ -57,7 +57,7 @@ require('attempt').setup{
   autosave = false,
   list_buffers = false,     -- This will make them show on other pickers (like :Telescope buffers)
   initial_content = {
-    py = initial_content_fn -- Either string or function that returns the initial content
+    py = initial_content_fn, -- Either string or function that returns the initial content
     c = initial_content_fn,
     cpp = initial_content_fn,
     java = initial_content_fn,
