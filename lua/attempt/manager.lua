@@ -49,7 +49,9 @@ end
 
 function M.list(cb)
   filedata.get(function (data)
-    cb(data.file_entries)
+    vim.schedule(function()
+      cb(data.file_entries)
+    end)
   end)
 end
 

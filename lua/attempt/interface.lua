@@ -59,7 +59,7 @@ function M.open_select(cb)
       format_item = entry_to_filename
     }, function(choice)
       manager.open_attempt(choice)
-      cb()
+      if cb then cb() end
     end)
   end)
 end
