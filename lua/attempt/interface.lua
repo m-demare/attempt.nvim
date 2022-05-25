@@ -43,7 +43,7 @@ function M.run(bufnr)
   elseif type(run_cmds) == 'string' then
       vim.cmd(run_cmds)
   else
-    config.opts.run[file_entry.ext](file_entry.ext, bufnr)
+    run_cmds(file_entry.ext, bufnr)
   end
 end
 
