@@ -18,6 +18,8 @@ M.get = a.void(function (cb)
   assert(not err, err)
   local err, data = a.uv.fs_read(fd, stat.size, 0)
   assert(not err, err)
+  local err = a.uv.fs_close(fd)
+  assert(not err, err)
 
   vim.schedule(function()
     cb = a.void(cb)
@@ -30,6 +32,8 @@ M.save = a.void(function (data, cb)
     local err, fd = a.uv.fs_open(data_file_path, "w", filemode)
     assert(not err, err)
     local err = a.uv.fs_write(fd, strdata, 0)
+    assert(not err, err)
+    local err = a.uv.fs_close(fd)
     assert(not err, err)
     if cb then cb() end
 end)
@@ -65,6 +69,8 @@ M.new_file = a.void(function (opts, cb)
     local content = opts.initial_content or config.opts.initial_content[opts.ext] or ''
     if type(content) == 'function' then content = content(opts.ext) end
     local err = a.uv.fs_write(fd, content, 0)
+    assert(not err, err)
+    local err = a.uv.fs_close(fd)
     assert(not err, err)
 
     data.internal.num_files = data.internal.num_files + 1
