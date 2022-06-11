@@ -80,6 +80,50 @@ function M.delete_buf(force, bufnr, cb)
   M.delete(file_entry.path, cb)
 end
 
+local function get_first_match_idx(opts, file_entries)
+    for i, entry in ipairs(file_entries) do
+      if opts.ext and entry.ext ~= opts.ext then
+        goto continue
+      end
+      if opts.pattern and not string.find(entry.filename, opts.pattern) then
+        goto continue
+      end
+
+      if true then -- Otherwise it fails due to "unreachable code"
+        return i
+      end
+      ::continue::
+    end
+end
+
+local function delete_filtered(opts, cb, deleted)
+  if opts.max_to_delete and deleted >= opts.max_to_delete then
+    vim.notify("Attempts deleted", vim.log.levels.INFO)
+    if cb then cb() end
+    return
+  end
+  manager.list(function (file_entries)
+    table.sort(file_entries, function (a, b)
+      return a.creation_date < b.creation_date
+    end)
+    local to_delete = get_first_match_idx(opts, file_entries)
+    if not to_delete then
+      vim.notify("Attempts deleted", vim.log.levels.INFO)
+      if cb then cb() end
+      return
+    end
+    manager.delete(file_entries[to_delete].path, function ()
+      vim.schedule(function ()
+        delete_filtered(opts, cb, deleted+1)
+      end)
+    end)
+  end)
+end
+
+function M.delete_filtered(opts, cb)
+  delete_filtered(opts, cb, 0)
+end
+
 function M.rename(path, new_name, cb)
   manager.rename(path, new_name, cb)
 end

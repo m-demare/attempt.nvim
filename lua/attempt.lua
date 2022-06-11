@@ -38,6 +38,8 @@ M.delete = req('attempt.interface', 'delete')
 
 M.delete_buf = req('attempt.interface', 'delete_buf')
 
+M.delete_filtered = req('attempt.interface', 'delete_filtered')
+
 M.rename = req('attempt.interface', 'rename')
 
 M.rename_buf = req('attempt.interface', 'rename_buf')

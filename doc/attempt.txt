@@ -206,6 +206,33 @@ delete_buf({force}, {bufnr}, {cb})                      *attempt.delete_buf()*
             Function to be called after deletion, with its
             parameter indicating if it was successful
 
+delete_filtered({opts}, {cb})                      *attempt.delete_filtered()*
+    Description: Deletes the attempts that match all filters in opts. Note
+    that if not opts are provided, all attempts will be deleted (use with
+    caution)
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {opts} (table):
+            Options
+            - {ext}:                (string|nil)
+              What extension to delete. Default: nil
+            - {pattern}:            (string|nil)
+              Lua pattern to be matched against the
+              filename (note that the filename does not
+              include the extension). Default: nil
+            - {max_to_delete}       (number|nil)
+              Max number of files to delete. Files are deleted
+              from oldest to newest (according to creation
+              time), so a value of one will only delete the
+              oldest attempt. If nil, all matched files will
+              be deleted. Default: nil
+        {cb} (function):
+            Function to be called after deletion, with its
+            parameter indicating if it was successful
+
 rename({path}, {new_name}, {cb})                            *attempt.rename()*
     Description: Renames existing attempt, given by path
 

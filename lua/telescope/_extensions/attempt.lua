@@ -8,7 +8,7 @@ local function entry_to_filename(e)
   return e.value.filename .. (e.value.ext and e.value.ext ~= '' and ('.' .. e.value.ext) or '')
 end
 
-local scratch_picker = function(opts)
+local function scratch_picker(opts)
   local filedata = require 'attempt.filedata'
   filedata.get(function (data)
     local file_entries = data.file_entries
@@ -33,8 +33,10 @@ local scratch_picker = function(opts)
           action_set.select:replace(function (prompt_bufnr, type)
             action_set.edit(prompt_bufnr, action_state.select_key_to_edit_key(type))
             local selection = action_state.get_selected_entry()
-            local manager = require 'attempt.manager'
-            manager.on_attempt_enter(vim.api.nvim_buf_get_number(0), selection.value)
+            if selection then
+              local manager = require 'attempt.manager'
+              manager.on_attempt_enter(vim.api.nvim_buf_get_number(0), selection.value)
+            end
           end)
           return true
         end,
