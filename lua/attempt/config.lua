@@ -28,6 +28,7 @@ local defaults = {
   run = {
     py = { 'w !python' },
     js = { 'w !node' },
+    ts = { 'w !deno run -' },
     lua = { 'w', 'luafile %' },
     sh = { 'w !bash' },
     pl = { 'w !perl' },

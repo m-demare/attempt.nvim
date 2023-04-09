@@ -70,6 +70,7 @@ require('attempt').setup{
   run = {
     py = { 'w !python' },      -- Either table of strings or lua functions
     js = { 'w !node' },
+    ts = { 'w !deno run -' },
     lua = { 'w' , 'luafile %' },
     sh = { 'w !bash' },
     pl = { 'w !perl' },
