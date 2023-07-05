@@ -11,6 +11,10 @@ function M.new_select(cb)
       return config.opts.format_opts[item] or item
     end
   }, function(choice)
+    if not choice then
+      vim.notify('No extension selected', vim.log.levels.WARN, {})
+      return
+    end
     M.new({ ext = choice }, cb)
   end)
 end
@@ -19,6 +23,10 @@ function M.new_input_ext(cb)
   vim.ui.input({
     prompt = 'File extension: ',
   }, function(choice)
+    if not choice then
+      vim.notify('No extension selected', vim.log.levels.WARN, {})
+      return
+    end
     M.new({ ext = choice }, cb)
   end)
 end
@@ -53,10 +61,18 @@ end
 
 function M.open_select(cb)
   manager.list(function(file_entries)
+    if #file_entries == 0 then
+      vim.notify('No attempts created', vim.log.levels.WARN, {})
+      return
+    end
     vim.ui.select(file_entries, {
       prompt = 'Choose file to open',
       format_item = entry_to_filename
     }, function(choice)
+      if not choice then
+        vim.notify('No attempt selected', vim.log.levels.WARN, {})
+        return
+      end
       manager.open_attempt(choice)
       if cb then cb() end
     end)
