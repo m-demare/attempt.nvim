@@ -2,6 +2,20 @@ local M = {}
 local config = require 'attempt.config'
 local filedata = require 'attempt.filedata'
 
+local get_bufnr
+local buf_set_opt
+if vim.fn.has("nvim-0.10") == 1 then
+  get_bufnr = vim.fn.bufnr
+  buf_set_opt = function(bufnr, opt, val)
+    vim.api.nvim_set_option_value(opt, val, {
+      buf = bufnr,
+    })
+  end
+else
+  get_bufnr = vim.api.nvim_buf_get_number
+  buf_set_opt = vim.api.nvim_buf_set_option
+end
+
 local function standardize_opts(opts, cb)
   if not opts.filename then
     filedata.next_filename(function(name)
@@ -14,7 +28,7 @@ local function standardize_opts(opts, cb)
 end
 
 function M.on_attempt_enter(bufnr, file_entry)
-  vim.api.nvim_buf_set_option(bufnr, 'buflisted', config.opts.list_buffers)
+  buf_set_opt(bufnr, 'buflisted', config.opts.list_buffers)
   vim.api.nvim_buf_set_var(bufnr, 'attempt_data', file_entry)
   if config.opts.autosave then
     local augroup = vim.api.nvim_create_augroup('attempt.nvim-' .. tostring(bufnr), { clear = true })
@@ -28,7 +42,7 @@ end
 
 function M.open_attempt(file_entry)
   vim.cmd('edit ' .. file_entry.path)
-  local bufnr = vim.api.nvim_buf_get_number(0)
+  local bufnr = get_bufnr(0)
   M.on_attempt_enter(bufnr, file_entry)
 end
 
