@@ -16,8 +16,18 @@ Manage your temporary buffers
 - Run the scratch files
 - Every file operation is asynchronous
 
+## Dependencies
+This plugin depends on [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
+
 ## Installation
 This plugin is for [neovim](https://neovim.io/) only. Version 0.7+ is required.
+
+[lazy.nvim](https://github.com/folke/lazy.nvim)
+```lua
+return {
+    'm-demare/attempt.nvim', -- No need to specify plenary as dependency
+}
+```
 
 [packer.nvim](https://github.com/wbthomason/packer.nvim):
 ```lua
