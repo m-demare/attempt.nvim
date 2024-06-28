@@ -5,7 +5,10 @@ local filedata = require 'attempt.filedata'
 local get_bufnr
 local buf_set_opt
 if vim.fn.has("nvim-0.10") == 1 then
-  get_bufnr = vim.fn.bufnr
+  get_bufnr = function (bufnr)
+    if bufnr and bufnr ~= 0 then return bufnr end
+    return vim.fn.bufnr()
+  end
   buf_set_opt = function(bufnr, opt, val)
     vim.api.nvim_set_option_value(opt, val, {
       buf = bufnr,
