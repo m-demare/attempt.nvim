@@ -91,26 +91,29 @@ require('attempt').setup{
 -- (You may omit the settings whose defaults you're ok with)
 ```
 
+It's recommended to use either the telescope or the snacks.picker for opening your
+attempts, since they allow previewing the files' contents
+
 ### Telescope picker
-To use the telescope picker for opening your attempts (recommended, to have a nice
-previewer), add this somewhere after your `telescope.setup()` call:
+To use the telescope picker for opening your attempts, add this somewhere after your
+`telescope.setup()` call:
 ```lua
 require('telescope').load_extension 'attempt'
 ```
-You can customize this picker in the usual [telescope
-way](https://github.com/nvim-telescope/telescope.nvim#customization)
+You can customize this picker in the usual [telescope way](https://github.com/nvim-telescope/telescope.nvim#customization)
+
+### Snacks picker
+To use the snacks.nvim picker for opening your attempts, you can use the following mapping:
+```lua
+vim.keymap.set('n', '<leader>al', require('attempt.snacks').picker)
+```
 
 ### Keymaps
 By default, no keymaps are created. To use the basic presets, you can do:
 
 ```lua
 local attempt = require('attempt')
-
-function M.map(mode, l, r, opts)
-    opts = opts or {}
-    opts = vim.tbl_extend('force', { silent=true }, opts)
-    vim.keymap.set(mode, l, r, opts)
-end
+local map = vim.keymap.set
 
 map('n', '<leader>an', attempt.new_select)        -- new attempt, selecting extension
 map('n', '<leader>ai', attempt.new_input_ext)     -- new attempt, inputing extension
@@ -118,7 +121,8 @@ map('n', '<leader>ar', attempt.run)               -- run attempt
 map('n', '<leader>ad', attempt.delete_buf)        -- delete attempt from current buffer
 map('n', '<leader>ac', attempt.rename_buf)        -- rename attempt from current buffer
 map('n', '<leader>al', 'Telescope attempt')       -- search through attempts
---or: map('n', '<leader>al', attempt.open_select) -- use ui.select instead of telescope
+--or: map('n', '<leader>al', require('attempt.snacks').picker)
+--or: map('n', '<leader>al', attempt.open_select) -- use ui.select instead of telescope/snacks.nvim
 ```
 
 See [`:h
