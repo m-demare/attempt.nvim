@@ -71,18 +71,20 @@ function M.run_lines(lines, ext, cb)
   end
   manager.new_tmp({ ext = ext }, function(bufnr, file_entry)
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-    vim.api.nvim_buf_call(bufnr, function() vim.cmd("write!") end)
-    print('\n') -- Prevent output from overlapping with existing msgs
-    local run_cmds = config.opts.run[ext]
-    if type(run_cmds) == 'table' then
-      for _, cmd in pairs(run_cmds) do
-        vim.cmd(cmd)
+    vim.api.nvim_buf_call(bufnr, function()
+      vim.cmd("write!")
+      print('\n') -- Prevent output from overlapping with existing msgs
+      local run_cmds = config.opts.run[ext]
+      if type(run_cmds) == 'table' then
+        for _, cmd in pairs(run_cmds) do
+          vim.cmd(cmd)
+        end
+      elseif type(run_cmds) == 'string' then
+        vim.cmd(run_cmds)
+      else
+        run_cmds(ext, bufnr)
       end
-    elseif type(run_cmds) == 'string' then
-      vim.cmd(run_cmds)
-    else
-      run_cmds(ext, bufnr)
-    end
+    end)
     vim.schedule(function()
       if cb then
         cb(bufnr, file_entry)
