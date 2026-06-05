@@ -55,6 +55,43 @@ function M.run(bufnr)
   end
 end
 
+function M.run_lines(lines, ext, cb)
+  if not ext then
+    local name = vim.api.nvim_buf_get_name(0)
+    -- set ext to nil if there's no name (e.g., unnamed buffer)
+    if name == "" then
+      ext = nil
+    else
+      ext = name:match("^.+%.([^/\\%.]+)$")
+    end
+  end
+  if not config.opts.run[ext] then
+    vim.notify('No config for running ' .. ext .. ' files', vim.log.levels.WARN, {})
+    return
+  end
+  manager.new_tmp({ ext = ext }, function(bufnr, file_entry)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+    vim.api.nvim_buf_call(bufnr, function() vim.cmd("write!") end)
+    print('\n') -- Prevent output from overlapping with existing msgs
+    local run_cmds = config.opts.run[ext]
+    if type(run_cmds) == 'table' then
+      for _, cmd in pairs(run_cmds) do
+        vim.cmd(cmd)
+      end
+    elseif type(run_cmds) == 'string' then
+      vim.cmd(run_cmds)
+    else
+      run_cmds(ext, bufnr)
+    end
+    vim.schedule(function()
+      if cb then
+        cb(bufnr, file_entry)
+      end
+      M.delete_buf_tmp(true, bufnr, file_entry)
+    end)
+  end)
+end
+
 local function entry_to_filename(e)
   return e.filename .. (e.ext ~= '' and ('.' .. e.ext) or '')
 end
@@ -79,6 +116,12 @@ function M.open_select(cb)
   end)
 end
 
+function M.open_extension_select(cb)
+  vim.ui.select(config.opts.ext_options, {
+    prompt = "Select extension",
+  }, cb)
+end
+
 function M.delete(path, cb)
   manager.delete(path, cb)
 end
@@ -94,6 +137,14 @@ function M.delete_buf(force, bufnr, cb)
     force = force
   })
   M.delete(file_entry.path, cb)
+end
+
+function M.delete_buf_tmp(force, bufnr, file_entry)
+  bufnr = bufnr or vim.api.nvim_buf_get_number(0)
+  vim.api.nvim_buf_delete(bufnr, {
+    force = force
+  })
+  M.delete(file_entry.path)
 end
 
 local function get_first_match_idx(opts, file_entries)

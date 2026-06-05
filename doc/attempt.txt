@@ -165,8 +165,38 @@ run({bufnr})                                                   *attempt.run()*
         have to manage how it's run. Use nil to run the
         current buffer
 
+run_lines({lines}, {ext}, {cb})                                 *attempt.run_lines()*
+    Description: Run attempt with the configuration in |attempt-config-run| on
+    code found in the passed in {lines}
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {lines}:        (list<string>)
+        A new-line separated list of code lines
+        {ext}:          (string|nil)
+        The extension used for evaluating the code. Must be present in the
+        ext_options config option. If not provided, the current buffers ext is
+        used instead
+        {cb}:           (function)
+        Function to be called after the attempt is run to completion, with the
+        bufnr and the |attempt-file_entry| as parameters
+
 open_select({cb})                                      *attempt.open_select()*
     Description: Opens existing attempt, letting you choose with
+    |vim.ui.select|
+
+    Attributes: ~
+        {async}
+
+    Parameters: ~
+        {cb} (function):
+            Function to be called after opening, with the
+            |attempt-file_entry| as parameter
+
+open_extension_select({cb})                             *attempt.open_extension_select()*
+    Description: Opens |attempt-ext_options|, letting you choose with
     |vim.ui.select|
 
     Attributes: ~

@@ -64,6 +64,23 @@ function M.new(opts, cb)
   end)
 end
 
+function M.new_tmp(opts, cb)
+  filedata.new_file_tmp({
+    filename = opts.filename or 'scratch-tmp',
+    ext = opts.ext,
+    initial_content = opts.initial_content
+  }, function(file_entry)
+    vim.schedule(function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_name(bufnr, file_entry.path)
+      vim.api.nvim_buf_set_option(bufnr, 'buftype', '')
+      if cb then
+        cb(bufnr, file_entry)
+      end
+    end)
+  end)
+end
+
 function M.list(cb)
   filedata.get(function (data)
     vim.schedule(function()

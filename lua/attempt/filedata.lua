@@ -47,33 +47,49 @@ local function get_path(filename, ext)
   return config.opts.dir .. filename .. ext
 end
 
+local function create_new_entry(opts, data, cb)
+  local path = get_path(opts.filename, opts.ext)
+  local old_entry = util.find(data.file_entries, function (f)
+    return f.path == path
+  end)
+  if old_entry then cb(old_entry); return end
+
+  local new_entry = {
+    path = path,
+    filename = opts.filename,
+    ext = opts.ext,
+    creation_date = os.time()
+  }
+  table.insert(data.file_entries, new_entry)
+
+  -- Save new file
+  local err, fd = a.uv.fs_open(path, 'w', filemode)
+  assert(not err, err)
+  local content = opts.initial_content or config.opts.initial_content[opts.ext] or ''
+  if type(content) == 'function' then content = content(opts.ext) end
+  local err = a.uv.fs_write(fd, content, 0)
+  assert(not err, err)
+  local err = a.uv.fs_close(fd)
+  assert(not err, err)
+
+  return new_entry
+end
+
 M.new_file = a.void(function (opts, cb)
   M.get(function(data)
-    local path = get_path(opts.filename, opts.ext)
-    local old_entry = util.find(data.file_entries, function (f)
-      return f.path == path
-    end)
-    if old_entry then cb(old_entry); return end
-
-    local new_entry = {
-      path = path,
-      filename = opts.filename,
-      ext = opts.ext,
-      creation_date = os.time()
-    }
-    table.insert(data.file_entries, new_entry)
-
-    -- Save new file
-    local err, fd = a.uv.fs_open(path, 'w', filemode)
-    assert(not err, err)
-    local content = opts.initial_content or config.opts.initial_content[opts.ext] or ''
-    if type(content) == 'function' then content = content(opts.ext) end
-    local err = a.uv.fs_write(fd, content, 0)
-    assert(not err, err)
-    local err = a.uv.fs_close(fd)
-    assert(not err, err)
+    local new_entry = create_new_entry(opts, data, cb)
 
     data.internal.num_files = data.internal.num_files + 1
+    M.save(data, function()
+      cb(new_entry)
+    end)
+  end)
+end)
+
+M.new_file_tmp = a.void(function (opts, cb)
+  M.get(function(data)
+    local new_entry = create_new_entry(opts, data, cb)
+
     M.save(data, function()
       cb(new_entry)
     end)
